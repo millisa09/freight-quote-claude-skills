@@ -1,0 +1,17 @@
+{
+  "_instructions": "Copy this file, rename it to config.json, and fill in your brokerage details. Never commit config.json to a public repo.",
+
+  "broker_company":       "My Brokerage LLC",
+  "broker_mc":            "MC #123456",
+  "broker_address":       "123 Main St, City, ST 00000",
+  "broker_email":         "you@yourbrokerage.com",
+  "broker_phone_office":  "555-000-0000",
+  "broker_phone_mobile":  "555-000-0001",
+  "broker_contact_name":  "Your Name",
+
+  "brand_color_navy":     "#0D2D5E",
+  "brand_color_gold":     "#C8A84B",
+
+  "quote_prefix":         "FMQ",
+  "default_valid_days":   14
+}

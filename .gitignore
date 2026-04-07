@@ -1,0 +1,16 @@
+# Never commit your personal brokerage config
+config.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Output PDFs (don't commit generated quotes)
+*.pdf
+*.docx
