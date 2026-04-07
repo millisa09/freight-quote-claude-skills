@@ -98,11 +98,11 @@ a pasted email, a load summary, or bullet points.
 **Example input:**
 
 ```
-Seth from Machinery Network needs a Conestoga LTL quote.
-Origin: Trumbauersville PA 18970
-Destination: Mahtomedi MN 55115
+Chad from Machinery Futures needs a Conestoga LTL quote.
+Origin: Erie PA 16501
+Destination: Fishers In 46037
 Machine: 15'L x 4'W x 7'H, 13,000 lbs
-Quote: $3,185
+Quote: $2895
 ```
 
 **Example output:** A polished, ready-to-send PDF — see `/examples/sample-quote.pdf`
