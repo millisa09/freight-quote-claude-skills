@@ -251,7 +251,7 @@ This free version gives you the foundation. For a **fully custom setup** with:
 - Voice agent integration (callers get quotes automatically)
 - Full CRM sync (Close.com, HubSpot, or your TMS)
 
-👉 Visit **[lacrown.ai](https://lacrown.ai)** or email **missy@finemarkgroup.com**
+👉 Visit **[lacrown.ai](https://lacrown.ai)** or email **millisa@lacrown.ai**
 
 ---
 
