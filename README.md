@@ -2,15 +2,20 @@
 
 **Free Claude AI skill pack built specifically for freight brokers.**
 
-Generate branded PDF freight quotes, document carrier failures, and auto-detect
-RFQ emails — all from inside Claude or Cowork, in seconds.
+Generate branded PDF freight quotes with live EIA diesel surcharge, mileage
+calculation, and accessorial tracking — document carrier failures, and
+auto-detect RFQ emails — all from inside Claude or Cowork, in seconds.
 
 Built by **[Millisa Nwokolo](https://lacrown.ai)** — 26 years in freight brokerage,
 Operations Manager at Finemark Inc., founder of **[La Crown Inc.](https://lacrown.ai)**
 — AI automation for freight brokers and logistics professionals.
 
 > _"I built these because I was spending 20 minutes a day formatting the same quote
-> PDF. Now it takes 10 seconds."_
+> PDF. Now it takes 10 seconds. RFQ at 4:18 PM. Signed rate con at 5:07 PM.
+> 49 minutes — same hour."_
+
+📺 **[Watch the full build on YouTube](https://youtu.be/EF7pyPDtbak?si=GCoUYJV_X3d6OfiR)**
+👥 **[Join the community on Skool](https://skool.com/la-crown-ai-8246)**
 
 ---
 
@@ -18,7 +23,7 @@ Operations Manager at Finemark Inc., founder of **[La Crown Inc.](https://lacrow
 
 | Skill | What It Does | Trigger Phrases |
 |---|---|---|
-| `freight-quote` | Generates a branded PDF freight quote from any load details or email | "quote this load", "make a quote for", "PDF quote" |
+| `freight-quote` | Generates a branded PDF quote with **live EIA diesel**, mileage calc, and accessorial tracking | "quote this load", "make a quote for", "PDF quote" |
 | `carrier-incident-report` | Documents carrier failures and drafts carrier + customer emails | "start an incident report", "document this carrier" |
 | `rfq-email-scanner` | Scans your Gmail inbox, detects RFQ emails, and drafts quote replies | "check my emails for RFQs", "scan inbox for quotes" |
 
@@ -26,50 +31,49 @@ Operations Manager at Finemark Inc., founder of **[La Crown Inc.](https://lacrow
 
 ## Quick Install (Under 3 Minutes)
 
-### Step 1 — Configure Your Brokerage Info
+### Step 1 — Install Dependencies
+
+```bash
+pip install reportlab requests python-docx
+```
+
+### Step 2 — Configure Your Brokerage Info
 
 Copy `config.example.json` → rename it to `config.json` → fill in your details:
 
 ```json
 {
-  "broker_company":       "My Brokerage LLC",
-  "broker_mc":            "MC #123456",
-  "broker_address":       "123 Main St, City, ST 00000",
-  "broker_email":         "you@yourbrokerage.com",
-  "broker_phone_office":  "555-000-0000",
-  "broker_phone_mobile":  "555-000-0001",
-  "broker_contact_name":  "Your Name",
-  "brand_color_navy":     "#0D2D5E",
-  "brand_color_gold":     "#C8A84B",
-  "quote_prefix":         "FMQ",
-  "default_valid_days":   14
+  "company_name":       "My Brokerage LLC",
+  "mc_number":          "MC #123456",
+  "address":            "123 Main St, City, ST 00000",
+  "email":              "you@yourbrokerage.com",
+  "phone":              "555-000-0000",
+  "mobile":             "555-000-0001",
+  "brand_navy":         "#0D2D5E",
+  "brand_gold":         "#C8A84B",
+  "valid_days":         14,
+  "linehaul_floor":     2.50,
+  "fsc_all_inclusive":  true,
+  "eia_api_key":        ""
 }
 ```
 
-> You only do this **once**. Every quote you generate will automatically use your
-> branding and contact info.
+> You only do this **once**. Every quote, incident report, and email draft will
+> automatically use your branding and contact info.
+>
+> Get a free EIA API key at [eia.gov/opendata/register.php](https://www.eia.gov/opendata/register.php)
+> for reliable live diesel data. Leave blank to use the web scraping fallback.
 
-### Step 2 — Download a Skill File
+### Step 3 — Use a Skill
 
-Go to the [Releases](../../releases) tab and download the `.skill` file(s) you want.
-
-### Step 3 — Install in Cowork or Claude
-
-1. Open **Cowork** or **Claude.ai**
-2. Go to **Settings → Skills → Upload Skill**
-3. Upload the `.skill` file
-4. Done ✅
-
-### Step 4 — Use It
-
-Just talk naturally:
+Just talk naturally in Claude or Cowork:
 
 ```
 "Quote this load — origin Chicago IL, destination Dallas TX,
- flatbed, 42,000 lbs, 48x102, $1,850"
+ flatbed, 42,000 lbs, 48x102x6"
 ```
 
-Claude will build and return a ready-to-send PDF quote in your branding.
+Claude reads the SKILL.md, runs the scripts, and returns a ready-to-send PDF.
 
 ---
 
@@ -77,35 +81,64 @@ Claude will build and return a ready-to-send PDF quote in your branding.
 
 ---
 
-### 1. `freight-quote` — PDF Quote Generator
+### 1. `freight-quote` — PDF Quote Generator with Live EIA Diesel
 
-Generates a professional, fully-branded freight quote PDF from any input:
+Generates a professional, fully-branded freight quote PDF from any input —
 a pasted email, a load summary, or bullet points.
+
+**What's new in this version:**
+- 🛢️ **Live EIA diesel data** — pulls the current week's on-highway diesel price for the correct PADD region automatically. No more quoting on last month's fuel cost.
+- 🗺️ **Mileage calculation** — calculates road miles from origin to destination. 100 major freight hubs built in; geocodes anything else automatically.
+- 📋 **Accessorial detection** — scans load details and flags tarping, liftgate, detention, layover, permits, and more before you quote.
+- 📊 **Lane history aware** — add your past quotes to `config/lane_history.json` and Claude will reference your actual outcomes, not DAT's averaged market data.
 
 **What the PDF includes:**
 - Your brokerage header (name, MC#, address, phone, email)
 - Quote number, date, valid-until date
 - Quoted To section (customer + seller/contact info)
 - Shipment Details table (origin, destination, miles, equipment, weight, dims)
-- Pricing Summary table with line items
-- Total Flat Rate with your amount in your brand color
+- Pricing Summary with live fuel surcharge note (EIA date + diesel price cited)
+- Total Flat Rate in your brand color
 - Terms & Conditions (8 standard terms auto-included)
-- **Cargo Insurance Clause** — carrier covers $100K; shipper must disclose
-  and obtain shipper's interest policy for any value above that limit
+- **Cargo Insurance Clause** — carrier covers $100K; shipper must disclose and obtain shipper's interest policy for any value above that limit
 - Acceptance / Signature block
 - Footer with your contact info
 
-**Example input:**
+**Live Diesel — PADD Region Auto-Detection:**
 
+| Region | States |
+|--------|--------|
+| PADD 1 — East Coast | ME, NH, VT, MA, RI, CT, NY, NJ, PA, MD, DE, DC, VA, WV, NC, SC, GA, FL |
+| PADD 2 — Midwest | OH, MI, IN, IL, WI, MN, IA, MO, ND, SD, NE, KS, OK, TN, KY |
+| PADD 3 — Gulf Coast | TX, LA, MS, AL, AR, NM |
+| PADD 4 — Rocky Mountain | MT, ID, WY, CO, UT |
+| PADD 5 — West Coast | WA, OR, CA, AK, HI, NV, AZ |
+
+**Accessorials Tracked:**
+
+| Accessorial | When Flagged | Typical Range |
+|-------------|--------------|---------------|
+| Fuel Surcharge | Every load — live EIA, auto-calculated | Embedded or line item |
+| Tarping | Open flatbed + weather protection needed | $75–$200 |
+| Liftgate | No dock at receiver | $75–$150 |
+| Inside Delivery | Freight past the threshold | $100–$300 |
+| Detention | Known slow facility | $65–$100/hr after 2 hrs |
+| Layover | Multi-day window or chronic receiver delays | $300–$500/night |
+| Oversize Permit | Exceeds 8'6" W, 13'6" H, 53' L, or 80K lbs | $150–$500+/state |
+| Driver Assist | Loading/unloading help required | $50–$150/hr |
+| Team Driver | Time-critical load | $400–$800 |
+| Hazmat | Classified hazardous material | $100–$300 |
+
+**Example input:**
 ```
 Chad from Machinery Futures needs a Conestoga LTL quote.
 Origin: Erie PA 16501
-Destination: Fishers In 46037
+Destination: Fishers IN 46037
 Machine: 15'L x 4'W x 7'H, 13,000 lbs
-Quote: $2895
 ```
 
-**Example output:** A polished, ready-to-send PDF — see `/examples/sample-quote.pdf`
+**Example output:** A polished, ready-to-send PDF with live diesel surcharge noted.
+See `/examples/sample-quote.pdf`
 
 ---
 
@@ -137,13 +170,12 @@ carrier-facing and customer-facing email.
 > ⚠️ **Requires Gmail MCP** to be connected in your Claude/Cowork environment.
 > See [INSTALL.md](INSTALL.md) for Gmail MCP setup instructions.
 
-This skill connects to your Gmail, scans for incoming RFQ / rate request emails,
-extracts the load details, and drafts a quote reply — ready for your review before
-sending.
+Connects to your Gmail, scans for incoming RFQ / rate request emails,
+extracts the load details, and drafts a quote reply — ready for your review
+before sending.
 
 **What it detects:**
-- Emails with keywords: "quote", "rate", "RFQ", "need a truck", "can you cover",
-  "what's your rate", "pricing for", "freight quote"
+- Emails with keywords: "quote", "rate", "RFQ", "need a truck", "can you cover", "what's your rate", "pricing for", "freight quote"
 - Attachments containing load details
 - Replies to existing quote threads asking for updated pricing
 
@@ -164,32 +196,12 @@ sending.
 
 ## Standard Cargo Insurance Clause
 
-Every quote generated by this skill pack includes the following clause,
-which protects you as the broker:
+Every quote generated by this skill pack includes the following clause automatically:
 
 > **Cargo Insurance:** The carrier selected for this shipment will carry a minimum
 > of $100,000 in cargo insurance. Any cargo value exceeding $100,000 must be
 > disclosed prior to booking. Shipper is responsible for obtaining a shipper's
-> interest insurance policy to cover any value above the carrier's cargo liability
-> limit.
-
-This is included automatically on every quote. You do not need to add it manually.
-
----
-
-## Customizing Your Brand Colors
-
-The PDF generator supports any brand colors. Update `config.json`:
-
-```json
-{
-  "brand_color_navy": "#0D2D5E",
-  "brand_color_gold": "#C8A84B"
-}
-```
-
-Use any hex color codes that match your brokerage brand. The generator will apply
-them to your company name, quote title, total amount, and section dividers.
+> interest insurance policy to cover any value above the carrier's cargo liability limit.
 
 ---
 
@@ -198,16 +210,25 @@ them to your company name, quote title, total amount, and section dividers.
 ```
 freight-quote-claude-skills/
 │
-├── README.md                         ← You are here
-├── INSTALL.md                        ← Detailed install + Gmail MCP setup
-├── LICENSE                           ← MIT — free to use and modify
-├── config.example.json               ← Copy this → rename → fill in your info
+├── README.md                          ← You are here
+├── INSTALL.md                         ← Detailed install + Gmail MCP setup
+├── LICENSE                            ← MIT — free to use and modify
+├── config.example.json                ← Copy → rename → fill in your info
 │
 ├── skills/
 │   ├── freight-quote/
-│   │   ├── SKILL.md                  ← Skill instructions for Claude
-│   │   └── scripts/
-│   │       └── generate_quote.py    ← PDF generator (Python / ReportLab)
+│   │   └── SKILL.md                   ← Original quote skill
+│   │
+│   ├── freight-calculator/            ← NEW — live EIA diesel + mileage + PDF
+│   │   ├── SKILL.md                   ← Claude's instruction brain
+│   │   ├── config/
+│   │   │   └── broker_config.json     ← Your branding (one-time setup)
+│   │   ├── scripts/
+│   │   │   ├── generate_quote.py      ← PDF generator (ReportLab)
+│   │   │   ├── eia_diesel.py          ← Live EIA diesel fetcher by PADD region
+│   │   │   └── mileage.py             ← Mileage calculator (100 cities + geocode)
+│   │   └── examples/
+│   │       └── sample_payload.json    ← Example JSON payload
 │   │
 │   ├── carrier-incident-report/
 │   │   └── SKILL.md
@@ -215,15 +236,10 @@ freight-quote-claude-skills/
 │   └── rfq-email-scanner/
 │       ├── SKILL.md
 │       └── scripts/
-│           └── scan_rfq.py          ← Gmail scan + extraction logic
+│           └── scan_rfq.py            ← Gmail scan + extraction logic
 │
-├── examples/
-│   └── sample-quote.pdf             ← Example output so you know what to expect
-│
-└── releases/
-    ├── freight-quote.skill
-    ├── carrier-incident-report.skill
-    └── rfq-email-scanner.skill
+└── examples/
+    └── sample-quote.pdf               ← Example PDF output
 ```
 
 ---
@@ -233,25 +249,48 @@ freight-quote-claude-skills/
 | Requirement | Notes |
 |---|---|
 | Claude.ai Pro or Team, or Cowork | Skills require Claude access |
-| Python 3.8+ | For the PDF generator script |
-| `reportlab` Python library | `pip install reportlab` |
-| `python-docx` Python library | `pip install python-docx` (incident report) |
+| Python 3.8+ | For the PDF generator and scripts |
+| `reportlab` | `pip install reportlab` |
+| `requests` | `pip install requests` (EIA diesel fetch) |
+| `python-docx` | `pip install python-docx` (incident report) |
 | Gmail MCP (optional) | Only required for `rfq-email-scanner` |
+| EIA API key (optional) | Free at [eia.gov/opendata/register.php](https://www.eia.gov/opendata/register.php) |
 
-> In Cowork and Claude.ai's built-in environment, Python and libraries are
-> pre-installed. You only need to install manually if running locally.
+---
+
+## Why Not Just Use DAT or FreightWaves?
+
+The SaaS rate platforms average everyone's data together — losses, absorbed
+accessorials, distressed carrier rates included. When you quote from their engine,
+you're quoting from someone else's mistakes.
+
+This skill pulls **your** data:
+- Live EIA diesel for **this week**, not last month
+- **Your** lane history and outcomes
+- **Your** customer's actual accessorial patterns
+
+> "Stop quoting from someone else's losses." — [Read the full post](https://lacrown.ai/blog)
 
 ---
 
 ## Want a Custom Build for Your Brokerage?
 
 This free version gives you the foundation. For a **fully custom setup** with:
-- Your brokerage's exact branding
-- Customer-specific RFQ workflows (Kelly Pipe, repeat shippers, etc.)
+- Your brokerage's exact branding baked in
+- Customer-specific RFQ workflows (repeat shippers, preferred lanes)
 - Voice agent integration (callers get quotes automatically)
 - Full CRM sync (Close.com, HubSpot, or your TMS)
+- Live margin tracking by carrier and customer
 
 👉 Visit **[lacrown.ai](https://lacrown.ai)** or email **millisa@lacrown.ai**
+
+---
+
+## Watch the Build
+
+📺 **[Full video: RFQ to Signed Rate Con in 49 Minutes](https://youtu.be/EF7pyPDtbak?si=GCoUYJV_X3d6OfiR)**
+👥 **[Join La Crown's Skool community](https://skool.com/la-crown-ai-8246)**
+📰 **[La Crown Blog](https://lacrown.ai/blog)**
 
 ---
 

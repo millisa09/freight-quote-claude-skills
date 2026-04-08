@@ -1,0 +1,32 @@
+{
+  "_comment": "Update every field below with your brokerage information. This file controls all branding across every quote.",
+
+  "company_name": "YOUR BROKERAGE NAME",
+  "mc_number": "MC #000000",
+  "address": "Your Address, City, ST ZIP",
+  "phone": "000-000-0000",
+  "mobile": "",
+  "email": "you@yourdomain.com",
+
+  "_comment_colors": "Hex color codes. brand_navy = company name, section headers. brand_gold = FREIGHT QUOTE label, total amount.",
+  "brand_navy": "#003366",
+  "brand_gold": "#C8961E",
+
+  "_comment_quote": "Default quote validity in days. 14 is standard.",
+  "valid_days": 14,
+
+  "_comment_floor": "Your minimum linehaul rate in dollars per mile. Used as a floor when calculating rates from scratch.",
+  "linehaul_floor": 2.50,
+
+  "_comment_fsc": "Set to true to embed fuel surcharge into the flat rate (all-inclusive). Set to false to break it out as a separate line item.",
+  "fsc_all_inclusive": true,
+
+  "_comment_insurance": "Your standard cargo insurance clause. Appears as the final term on every quote. Edit to match your carrier requirements.",
+  "cargo_insurance_clause": "The carrier selected for this shipment will carry a minimum of $100,000 in cargo insurance. Any cargo value exceeding $100,000 must be disclosed prior to booking. Shipper is responsible for obtaining a shipper's interest insurance policy to cover any value above the carrier's cargo liability limit.",
+
+  "_comment_output": "Where PDFs are saved. Defaults to /mnt/user-data/outputs (Claude computer environment). Change to a local path if running outside Claude.",
+  "output_dir": "/mnt/user-data/outputs",
+
+  "_comment_eia": "Optional: Register a free EIA API key at https://www.eia.gov/opendata/register.php for reliable diesel data fetching. Leave blank to use web scraping fallback.",
+  "eia_api_key": ""
+}

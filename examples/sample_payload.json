@@ -1,0 +1,60 @@
+{
+  "_comment": "Sample payload — replace all values with your actual load details. Pass this file to generate_quote.py to produce a PDF.",
+
+  "quote_num": "auto",
+  "valid_days": 14,
+
+  "quoted_to": {
+    "company": "ABC Manufacturing Co.",
+    "contact": "John",
+    "seller_name": "Jane Smith — Sales",
+    "seller_company": "Industrial Equipment Network",
+    "seller_email": "jane@ieqnetwork.com",
+    "seller_phone": "800-555-0100"
+  },
+
+  "shipment": {
+    "origin": "Fort Wayne, IN 46801",
+    "destination": "Houston, TX 77001",
+    "est_miles": "~1,050 miles",
+    "service_type": "Flatbed FTL",
+    "commodity": "Industrial Machinery",
+    "equipment": "Flatbed Trailer",
+    "weight": "42,000 lbs",
+    "dimensions": "48' L × 8' W × 5' H",
+    "permit_class": "Standard",
+    "est_transit": "2–3 Business Days"
+  },
+
+  "line_items": [
+    {
+      "description": "Freight Transportation",
+      "notes": "Fort Wayne, IN to Houston, TX | ~1,050 miles",
+      "amount": "Included"
+    },
+    {
+      "description": "Fuel Surcharge",
+      "notes": "Live EIA diesel $5.16/gal (PADD 2 — Midwest) — 51% FSC | Included in flat rate",
+      "amount": "Included"
+    },
+    {
+      "description": "Tarping",
+      "notes": "Open flatbed — commodity requires weather protection",
+      "amount": "$150.00"
+    },
+    {
+      "description": "Accessorial Charges",
+      "notes": "Detention / layover not anticipated — will be billed if incurred (see terms)",
+      "amount": "—"
+    }
+  ],
+
+  "total_label": "TOTAL FLAT RATE",
+  "total_note": "All-inclusive | No hidden fees",
+  "total_amount": "$3,450.00",
+
+  "extra_terms": [
+    "Tarping included in quoted rate. Driver will confirm tarp requirement at pickup.",
+    "Detention billed at $75/hr after 2 free hours at origin and destination."
+  ]
+}
